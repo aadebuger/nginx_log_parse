@@ -83,7 +83,7 @@ def main():
         methods = filter_methods_no_addr(methods) # 去除需要Ip文件的方法
 
     for method in methods:
-        print eval('pd_ng_log_stat.{method}()'.format(method = method))
+        print(eval('pd_ng_log_stat.{method}()'.format(method = method))) 
 
 
 if __name__ == '__main__':
