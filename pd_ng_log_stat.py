@@ -177,7 +177,7 @@ def main():
     # print pd_ng_log_stat.uv_cdn_ip_addr()
 
     # 统计 用户真实 IP 访问量 和 地址
-    print pd_ng_log_stat.uv_real_ip_addr()
+    print(d_ng_log_stat.uv_real_ip_addr())
 
 if __name__ == '__main__':
     main()
