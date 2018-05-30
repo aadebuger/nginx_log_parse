@@ -20,10 +20,12 @@ class NgLineParser(object):
         """通过传入的一行数据进行解析
         """
         line_item = line.strip().split('"')
-
-        if len(line_item) > 9: # 由于日志有改变需要删除一些元素
-            del line_item[1]
-            del line_item[1]
+        print('line_item',line_item)
+        for item in line_item:
+            print(item)
+ #       if len(line_item) > 9: # 由于日志有改变需要删除一些元素
+ #           del line_item[1]
+ #           del line_item[1]
 
         # 获取临时的 CDN IP 和 访问文件
         ip_time_tmp = line_item[0].strip().split()
@@ -31,6 +33,7 @@ class NgLineParser(object):
         self.real_ip = line_item[7] # 用户真实IP
         self.cdn_ip = ip_time_tmp[0] # CDN请求IP
         self.access_time = ip_time_tmp[3].lstrip('[') # 请求时间
+        print('line_item[1].strip().split()',line_item[1].strip().split())
         self.request_url = line_item[1].strip().split()[1] # 请求的URL
         self.reference_url = line_item[3].strip() # 外链URL
         self.response_status = line_item[2].strip().split()[0] # NG 响应状态码
@@ -85,8 +88,13 @@ class NgLineParser(object):
             传入: http://www.ttmark.com/diannao/2014/11/04/470.html
             解析成: www.ttmark.com
         """
-        proto, rest = urllib.splittype(reference_url)
-        res, rest = urllib.splithost(rest)
+#        proto, rest = urllib.splittype(reference_url)
+#        res, rest = urllib.splithost(rest)
+        print('reference_url',reference_url)
+        parseret  = urllib.parse.urlparse(reference_url)
+        print("parseret",parseret)
+        res = parseret.netloc
+        
         if not res:
             self._reference_url = '-'
         else:
@@ -103,8 +111,16 @@ class NgLineParser(object):
             传入: /wp-admin/admin-ajax.php?postviews_id=1348
             解析成: /wp-admin/admin-ajax.php
         """
-        proto, rest = urllib.splittype(request_url)
-        url_path, url_param = urllib.splitquery(rest)
+        print(request_url)
+        parseret  = urllib.parse.urlparse(request_url)
+        
+
+#        proto, rest = urllib.parse.urlparse(request_url)
+
+        proto = parseret.scheme
+        url_path = parseret.path
+        url_params =  ''
+#        url_path, url_param = urllib.splitquery(rest)
 
         if url_path.startswith('/tag/'):
             url_path = '/tag/'
@@ -140,15 +156,15 @@ def main():
         for index, line in enumerate(f):
             ng_line_parser.parse(line)
 
-            print '----------------------------'
-            print index
-            print ng_line_parser.real_ip
-            print ng_line_parser.cdn_ip
-            print ng_line_parser.access_time
-            print ng_line_parser.request_url
-            print ng_line_parser.reference_url
-            print ng_line_parser.response_status
-            print ng_line_parser.browser
+            print('----------------------------')
+            print(index)
+            print(ng_line_parser.real_ip)
+            print(ng_line_parser.cdn_ip)
+            print(ng_line_parser.access_time)
+            print(ng_line_parser.request_url)
+            print(ng_line_parser.reference_url)
+            print(ng_line_parser.response_status)
+            print(ng_line_parser.browser)
 
             # 只解析10行
             if index == 10: break
